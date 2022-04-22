@@ -10,9 +10,9 @@ const User = mongoose.model("User", {
     required: true,
     trim: true,
     lowercase: true,
-    validate(value) {
-      if (!validator.isEmail(value)) {
-        throw new Error("Invalid");
+    validate(val) {
+      if (val.length < 7) {
+        throw new Error("Length erroe");
       }
     },
   },
