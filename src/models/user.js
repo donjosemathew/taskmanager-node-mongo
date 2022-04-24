@@ -22,6 +22,7 @@ const userSchema = new mongoose.Schema({
     trim: true,
     lowercase: true,
     required: true,
+    unique: true,
     validate(val) {
       if (!validator.isEmail(val)) {
         throw new Error("Mail");
@@ -29,6 +30,30 @@ const userSchema = new mongoose.Schema({
     },
   },
 });
+
+userSchema.statics.findByCredentials = async (email, password) => {
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new Error("Unable To Login");
+  }
+
+  const isMatch = await bcrypt.compare(password, user.password, (err, res) => {
+    if (err) {
+      console.log("Sdsd", err);
+      return false;
+    }
+    if (res) {
+      return true;
+    }
+  });
+
+  if (isMatch) {
+    throw new Error("Unable To Login");
+  }
+
+  return user;
+};
 userSchema.pre("save", async function (next) {
   const user = this;
   if (user.isModified("password")) {
