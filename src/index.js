@@ -15,3 +15,4 @@ app.use(taskRouter);
 app.listen(port, () => {
   console.log(port);
 });
+console.log(process.env.NAME);
